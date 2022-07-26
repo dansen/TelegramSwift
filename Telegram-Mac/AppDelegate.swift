@@ -97,13 +97,17 @@ final class SharedApplicationContext {
 class AppDelegate: NSResponder, NSApplicationDelegate, NSUserNotificationCenterDelegate, NSWindowDelegate {
    
 
+    // 链接窗口
     @IBOutlet weak var window: Window! {
         didSet {
             window.delegate = self
+            // 设置透明
             window.isOpaque = true
+
             let notInitial = window.initSaver()
             
             if !notInitial {
+                // 设置窗口大小
                 let size = NSMakeSize(700, 550)
                 if let screen = NSScreen.main {
                     window.setFrame(NSMakeRect((screen.frame.width - size.width) / 2, (screen.frame.height - size.height) / 2, size.width, size.height), display: true)
@@ -262,7 +266,7 @@ class AppDelegate: NSResponder, NSApplicationDelegate, NSUserNotificationCenterD
             }
         #endif
         
-        
+        // 定时器
         Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(saveIntermediateDate), userInfo: nil, repeats: true)
 
         telegramUIDeclareEncodables()
@@ -285,7 +289,7 @@ class AppDelegate: NSResponder, NSApplicationDelegate, NSUserNotificationCenterD
 //            logger.logToConsole = false
 //            MTLogSetEnabled(false)
 //        #endif
-        
+        // 设置日志
         Logger.setSharedLogger(logger)
         
                 
@@ -307,6 +311,8 @@ class AppDelegate: NSResponder, NSApplicationDelegate, NSUserNotificationCenterD
         let rootPath = containerUrl!
         let window = self.window!
         _ = System.scaleFactor.swap(window.backingScaleFactor)
+
+        // 窗口最小值
         window.minSize = NSMakeSize(380, 500)
         
         let appEncryption = AppEncryptionParameters(path: rootPath)
@@ -397,6 +403,7 @@ class AppDelegate: NSResponder, NSApplicationDelegate, NSUserNotificationCenterD
         self.supportAccountContextValue?.enumerateApplicationContext(f)
     }
     
+    // 打开app
     private func launchApp(accountManager: AccountManager<TelegramAccountManagerTypes>, encryptionParameters: ValueBoxEncryptionParameters, appEncryption: AppEncryptionParameters) {
         
         
@@ -433,6 +440,7 @@ class AppDelegate: NSResponder, NSApplicationDelegate, NSUserNotificationCenterD
             }
         }, completed: {
             
+            // 使用信号量阻塞？
             let passcodeSemaphore = DispatchSemaphore(value: 0)
             
             _ = accountManager.transaction { modifier -> Void in
